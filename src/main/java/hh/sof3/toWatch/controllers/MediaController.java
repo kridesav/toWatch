@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import hh.sof3.toWatch.models.Movie;
-import hh.sof3.toWatch.repositories.GenreRepository;
 import hh.sof3.toWatch.repositories.MovieRepository;
 import hh.sof3.toWatch.repositories.TVShowRepository;
 
@@ -27,9 +26,6 @@ public class MediaController {
 
     @Autowired
     private TVShowRepository tRepo;
-
-    @Autowired
-    private GenreRepository gRepo;
 
     @RequestMapping(value ="/login")
     public String login() {
@@ -45,7 +41,6 @@ public class MediaController {
 
     @RequestMapping(value = "/addMovie")
     public String addMovie(Model model) {
-        model.addAttribute("genres", gRepo.findAll());
         model.addAttribute("movie", new Movie());
         return "addMovie";
     }

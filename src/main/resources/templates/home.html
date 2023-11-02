@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" ymlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"> 
+<html xmlns:th="http://www.thymeleaf.org" ymlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head>
 	<title>toWatch</title>
@@ -7,23 +7,46 @@
 	<link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
 </head>
 
-<body>
-	<div class="container" style="display:flex;padding-bottom: 5em;padding-top: 1em;"   >
-		<div class="col-md-4" style="margin-left: 0%;">
-			<h1>toWatch</h1>
-		</div>
-		<div class="col-md-4" style="margin: auto;">
-			<h3 style="text-align: center;">Welcome <span sec:authentication="name"></span></h3>
-		</div>
-		<div class="col-md-4" style="margin: auto;">
-			<form th:action="@{/logout}" method="post" style="margin-left: 100%;">
-				<input type="submit" value="Sign Out" class="btn btn-danger"/>
+<nav class="navbar sticky-top navbar-expand-lg bg-body-tertiary">
+	<div class="container-fluid">
+	  <a class="navbar-brand" href="#">
+		<img src="toWatch.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+		toWatch</a>
+	  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	  </button>
+	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+		  <li class="nav-item">
+			<a class="nav-link active" aria-current="page" href="#">Home</a>
+		  </li>
+		  <li class="nav-item">
+			<a class="nav-link" href="#">Movies</a>
+		  </li>
+		  <li class="nav-item">
+			<a class="nav-link" href="#">TV Shows</a>
+		  </li>
+		  <li class="nav-item">
+			<a class="nav-link" href="#">Favourites</a>
+		  </li>
+		</ul>
+		<form class="d-flex" role="search">
+		  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+		  <button class="btn btn-outline-success" type="submit">Search</button>
+		</form>
+		<div class="d-flex" style="margin-left: 10px;">
+			<form th:action="@{/logout}" method="post">
+				<input type="submit" value="Sign Out" class="btn btn-danger" />
 			</form>
 		</div>
+	  </div>
 	</div>
-	<table class="table table-striped" style="width: 80%; margin:auto">
+  </nav>
+
+<body>
+	<table class="table table-striped" style="width: 80%; margin:auto;">
 		<tr>
-            <th>Media</td>
+			<th>Media</td>
 			<th>Title</th>
 			<th>Description</th>
 			<th>Genre</th>
@@ -33,27 +56,37 @@
 			<th sec:authorize="hasAuthority('ADMIN')"> </th>
 		</tr>
 		<tr th:each="Movie : ${movies}">
-            <td th:text="Movie"></td>
+			<td th:text="Movie"></td>
 			<td th:text="${Movie.title}"></td>
 			<td th:text="${Movie.description}"></td>
 			<td th:text="${Movie.listedIn}"></td>
 			<td th:text="${Movie.releaseYear}"></td>
 			<td th:text="${Movie.director}"></td>
-			<td sec:authorize="hasAuthority('ADMIN')"><a class="btn btn-danger" th:href="@{/deleteMovie/{id}(id=${Movie.id})}">Delete</a></td>
-			<td sec:authorize="hasAuthority('ADMIN')"><a class="btn btn-success" th:href="@{/editMovie/{id}(id=${Movie.id})}">Edit</a></td>
+			<td sec:authorize="hasAuthority('ADMIN')"><a class="btn btn-danger"
+					th:href="@{/deleteMovie/{id}(id=${Movie.id})}">Delete</a></td>
+			<td sec:authorize="hasAuthority('ADMIN')"><a class="btn btn-success"
+					th:href="@{/editMovie/{id}(id=${Movie.id})}">Edit</a></td>
 		</tr>
-        <tr th:each="TVShow : ${tvshows}">
-            <td th:text="Series"></td>
+		<tr th:each="TVShow : ${tvshows}">
+			<td th:text="Series"></td>
 			<td th:text="${TVShow.title}"></td>
 			<td th:text="${TVShow.description}"></td>
 			<td th:text="${TVShow.listedIn}"></td>
 			<td th:text="${TVShow.releaseYear}"></td>
 			<td th:text="${TVShow.director}"></td>
-			<td sec:authorize="hasAuthority('ADMIN')"><a class="btn btn-danger" th:href="@{/deleteTVShow/{id}(id=${TVShow.id})}">Delete</a></td>
-			<td sec:authorize="hasAuthority('ADMIN')"><a class="btn btn-success" th:href="@{/editTVShow/{id}(id=${TVShow.id})}">Edit</a></td>
+			<td sec:authorize="hasAuthority('ADMIN')"><a class="btn btn-danger"
+					th:href="@{/deleteTVShow/{id}(id=${TVShow.id})}">Delete</a></td>
+			<td sec:authorize="hasAuthority('ADMIN')"><a class="btn btn-success"
+					th:href="@{/editTVShow/{id}(id=${TVShow.id})}">Edit</a></td>
 		</tr>
 	</table>
 	<a class="btn btn-success" href="/addMedia" style="margin-left: 10%;">Add Media</a>
+
+	<!-- Bootstrap core JavaScript
+================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="../static/js/bootstrap.bundle.min.js" th:href="@{/js/bootstrap.bundle.min.js}"></script>
 </body>
 
 </html>
