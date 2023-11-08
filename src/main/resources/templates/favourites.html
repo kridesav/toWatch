@@ -20,7 +20,7 @@
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 				<li class="nav-item">
-					<a class="nav-link active" aria-current="page" href="/home">Home</a>
+					<a class="nav-link" aria-current="page" href="/home">Home</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="/movies">Movies</a>
@@ -29,7 +29,7 @@
 					<a class="nav-link" href="/tvshows">TV Shows</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="/favourites">Favorites</a>
+					<a class="nav-link active" href="/favourites">Favourites</a>
 				</li>
 			</ul>
 			<form class="d-flex" role="search" action="/search" method="get">
@@ -37,11 +37,8 @@
 				<button class="btn btn-outline-success" type="submit">Search</button>
 			</form>
 			<div class="d-flex" style="margin-left: 10px;">
-				<form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
+				<form th:action="@{/logout}" method="post">
 					<input type="submit" value="Sign Out" class="btn btn-danger" />
-				</form>
-				<form th:action="@{/login}" method="get" sec:authorize="isAnonymous()">
-					<input type="submit" value="Log In" class="btn btn-success" />
 				</form>
 			</div>
 		</div>
@@ -49,32 +46,31 @@
 </nav>
 
 <body>
-    <div class="container py-4">
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">About toWatch</h5>
-                        <p class="card-text">toWatch is a platform where you can find your favorite movies and TV shows, and keep track of what you want to watch.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <h2>Most Favorited Movies</h2>
-                <ul th:each="movie : ${movies}">
-                    <li th:text="${movie.title}"></li>
-                </ul>
-            </div>
-            <div class="col-md-6 mb-4">
-                <h2>Most Favorited TV Shows</h2>
-                <ul th:each="tvshow : ${tvshows}">
-                    <li th:text="${tvshow.title}"></li>
-                </ul>
-            </div>
-        </div>
-    </div>
+	<table class="table table-striped" style="width: 80%; margin:auto;">
+        <tr>
+            <th></th>
+            <th>Type</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Genre</th>
+            <th>Release Date</th>
+            <th>Director</th>
+        </tr>
+        <tr th:each="favourite : ${user.favourites}">
+            <td>
+                <form th:action="@{/unfavourite/{type}/{id}(type=${favourite.movie != null ? 'movie' : 'tvshow'}, id=${favourite.movie != null ? favourite.movie.id : favourite.tvshow.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="star-button favourited">&#9734;</button>
+                </form>
+            </td>
+            <td th:text="${favourite.movie != null ? 'Movie' : 'TV Show'}"></td>
+            <td th:text="${favourite.movie != null ? favourite.movie.title : favourite.tvshow.title}"></td>
+            <td th:text="${favourite.movie != null ? favourite.movie.description : favourite.tvshow.description}"></td>
+            <td th:text="${favourite.movie != null ? favourite.movie.listedIn : favourite.tvshow.listedIn}"></td>
+            <td th:text="${favourite.movie != null ? favourite.movie.releaseYear : favourite.tvshow.releaseYear}"></td>
+            <td th:text="${favourite.movie != null ? favourite.movie.director : favourite.tvshow.director}"></td>
+        </tr>
+    </table>
+
 	<!-- Bootstrap core JavaScript
 ================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->

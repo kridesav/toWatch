@@ -30,7 +30,7 @@ public class User {
     private String role;
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Favorite> favorites;
+    private List<Favourite> favourites;
 
     // Constructors, getters, and setters
 
@@ -69,12 +69,12 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    public List<Favorite> getFavorites() {
-        return favorites;
+    public List<Favourite> getFavourites() {
+        return favourites;
     }
 
-    public void setFavorites(List<Favorite> favorites) {
-        this.favorites = favorites;
+    public void setFavourites(List<Favourite> favourites) {
+        this.favourites = favourites;
     }
 
     public String getRole() {

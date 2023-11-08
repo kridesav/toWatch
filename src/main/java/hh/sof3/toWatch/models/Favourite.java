@@ -3,7 +3,7 @@ package hh.sof3.toWatch.models;
 import jakarta.persistence.*;
 
 @Entity
-public class Favorite {
+public class Favourite {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,12 +23,16 @@ public class Favorite {
 
     // Constructors, getters, and setters
 
-    public Favorite() {
+    public Favourite() {
     }
 
-    public Favorite(User user, Movie movie, TVShow tvshow) {
+    public Favourite(User user, Movie movie) {
         this.user = user;
         this.movie = movie;
+    }
+
+    public Favourite(User user, TVShow tvshow) {
+        this.user = user;
         this.tvshow = tvshow;
     }
 

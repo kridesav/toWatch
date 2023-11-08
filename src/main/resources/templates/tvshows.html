@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" ymlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+    <title>toWatch</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
+	<link type="text/css" rel="stylesheet" th:href="@{/css/custom.css}" />
+</head>
+
+<nav class="navbar sticky-top navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="images/toWatch.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+            toWatch</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+					<a class="nav-link" aria-current="page" href="/home">Home</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/movies">Movies</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link active" href="/tvshows">TV Shows</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/favourites">Favourites</a>
+				</li>
+            </ul>
+            <form class="d-flex" role="search" action="/search" method="get">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            <div class="d-flex" style="margin-left: 10px;">
+                <form th:action="@{/logout}" method="post">
+                    <input type="submit" value="Sign Out" class="btn btn-danger" />
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<body>
+    <table class="table table-striped" style="width: 80%; margin:auto;">
+        <tr>
+            <th></th>
+            <th>Media</td>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Genre</th>
+            <th>Release Date</th>
+            <th>Director</th>
+            <th sec:authorize="hasAuthority('ADMIN')"> </th>
+            <th sec:authorize="hasAuthority('ADMIN')"> </th>
+        </tr>
+        <tr th:each="TVShow : ${tvshows}">
+			<td>
+				<form th:action="${#lists.contains(user.favourites.![tvshow], TVShow)} ? @{/unfavourite/tvshow/{id}(id=${TVShow.id})} : @{/favourite/tvshow/{id}(id=${TVShow.id})}" method="post" style="display: inline;">
+					<button type="submit" class="star-button" th:classappend="${#lists.contains(user.favourites.![tvshow], TVShow)} ? favourited : ''">&#9734;</button>
+				</form>
+			</td>
+			<td th:text="Series"></td>
+			<td th:text="${TVShow.title}"></td>
+			<td th:text="${TVShow.description}"></td>
+			<td th:text="${TVShow.listedIn}"></td>
+			<td th:text="${TVShow.releaseYear}"></td>
+			<td th:text="${TVShow.director}"></td>
+			<td sec:authorize="hasAuthority('ADMIN')">
+                <form th:action="@{/delete/tvshow/{id}(id=${TVShow.id})}" method="post">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </td>
+            <td sec:authorize="hasAuthority('ADMIN')">
+                <form th:action="@{/edit/tvshow/{id}(id=${TVShow.id})}" method="post">
+                    <button type="submit" class="btn btn-success">Edit</button>
+                </form>
+            </td>
+		</tr>
+    </table>
+    <a sec:authorize="hasAuthority('ADMIN')" class="btn btn-success" href="/addMedia" style="margin-left: 10%;">Add Media</a>
+
+    <!-- Bootstrap core JavaScript
+================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="../static/js/bootstrap.bundle.min.js" th:href="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+
+</html>
