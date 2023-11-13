@@ -16,8 +16,8 @@ public class Media {
     private String title;
     private String director;
 
-    @Column(name = "starring") // Use a different name for the column
-    private String cast; // Rename the attribute if needed
+    @Column(name = "starring")
+    private String cast;
 
     private String country;
     private String dateAdded;

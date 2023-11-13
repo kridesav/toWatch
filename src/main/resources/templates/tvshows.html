@@ -18,30 +18,41 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-					<a class="nav-link" aria-current="page" href="/home">Home</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="/movies">Movies</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link active" href="/tvshows">TV Shows</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="/favourites">Favourites</a>
-				</li>
-            </ul>
-            <form class="d-flex" role="search" action="/search" method="get">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-            <div class="d-flex" style="margin-left: 10px;">
-                <form th:action="@{/logout}" method="post">
-                    <input type="submit" value="Sign Out" class="btn btn-danger" />
-                </form>
-            </div>
-        </div>
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-4">
+						<ul class="navbar-nav mb-2 mb-lg-0">
+							<li class="nav-item">
+								<a class="nav-link" aria-current="page" href="/home">Home</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="/movies">Movies</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link active" href="/tvshows">TV Shows</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="/favourites">Favorites</a>
+							</li>
+						</ul>
+					</div>
+					<div class="col-4">
+						<form class="d-flex">
+							<input class="form-control me-2" id="searchInput" type="search" placeholder="Search..." aria-label="Search">
+							<ul id="suggestionList"></ul>
+						</form>
+					</div>
+					<div class="col-4 d-flex justify-content-end">
+						<form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
+							<input type="submit" value="Sign Out" class="btn btn-danger" />
+						</form>
+						<form th:action="@{/login}" method="get" sec:authorize="isAnonymous()">
+							<input type="submit" value="Log In" class="btn btn-success" />
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
     </div>
 </nav>
 
@@ -60,12 +71,13 @@
         </tr>
         <tr th:each="TVShow : ${tvshows}">
 			<td>
-				<form th:action="${#lists.contains(user.favourites.![tvshow], TVShow)} ? @{/unfavourite/tvshow/{id}(id=${TVShow.id})} : @{/favourite/tvshow/{id}(id=${TVShow.id})}" method="post" style="display: inline;">
+				<form th:if="${#authorization.expression('isAuthenticated()')}"
+                    th:action="${#lists.contains(user.favourites.![tvshow], TVShow)} ? @{/unfavourite/tvshow/{id}(id=${TVShow.id})} : @{/favourite/tvshow/{id}(id=${TVShow.id})}" method="post" style="display: inline;">
 					<button type="submit" class="star-button" th:classappend="${#lists.contains(user.favourites.![tvshow], TVShow)} ? favourited : ''">&#9734;</button>
 				</form>
 			</td>
 			<td th:text="Series"></td>
-			<td th:text="${TVShow.title}"></td>
+			<td><a class="black-link" th:href="@{'/media/tvshow/' + ${TVShow.id}}" th:text="${TVShow.title}"></a></td>
 			<td th:text="${TVShow.description}"></td>
 			<td th:text="${TVShow.listedIn}"></td>
 			<td th:text="${TVShow.releaseYear}"></td>
@@ -75,20 +87,124 @@
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
             </td>
-            <td sec:authorize="hasAuthority('ADMIN')">
-                <form th:action="@{/edit/tvshow/{id}(id=${TVShow.id})}" method="post">
-                    <button type="submit" class="btn btn-success">Edit</button>
-                </form>
+            <td>
+                <a sec:authorize="hasAuthority('ADMIN')" class="btn btn-success edit-btn" data-toggle="modal"
+                    data-target="#editMediaModal" th:data-id="${TVShow.id}" th:data-type="${TVShow.type}"
+                    th:data-title="${TVShow.title}" th:data-description="${TVShow.description}"
+                    th:data-genre="${TVShow.listedIn}" th:data-releaseYear="${TVShow.releaseYear}"
+                    th:data-director="${TVShow.director}">
+                    Edit
+                </a>
             </td>
-		</tr>
+        </tr>
     </table>
-    <a sec:authorize="hasAuthority('ADMIN')" class="btn btn-success" href="/addMedia" style="margin-left: 10%;">Add Media</a>
+    <!-- Add Media Button -->
+    <a sec:authorize="hasAuthority('ADMIN')" class="btn btn-success" data-toggle="modal" data-target="#addMediaModal"
+        style="margin-left: 10%;">Add Media</a>
+
+    <!-- Add Media Modal -->
+    <div class="modal fade" id="addMediaModal" tabindex="-1" role="dialog" aria-labelledby="addMediaModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addMediaModalLabel">Add Media</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Your form goes here -->
+                    <form th:action="@{/addMedia}" method="post">
+                        <div class="form-group">
+                            <label for="type">Type</label>
+                            <select id="type" name="type" class="form-control" required>
+                                <option value="movie">Movie</option>
+                                <option value="tvshow">TV Show</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input type="text" class="form-control" id="title" name="title" placeholder="Enter title"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" id="description" name="description"
+                                placeholder="Enter description" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="genre">Genre</label>
+                            <input type="text" class="form-control" id="genre" name="genre" placeholder="Enter genre"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="releaseDate">Release Date</label>
+                            <input type="number" class="form-control" id="releaseDate" name="releaseDate"
+                                placeholder="Enter release year" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="director">Director</label>
+                            <input type="text" class="form-control" id="director" name="director"
+                                placeholder="Enter director's name" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Media Modal -->
+    <div class="modal fade" id="editMediaModal" tabindex="-1" role="dialog" aria-labelledby="editMediaModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editMediaModalLabel">Edit Media</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm" th:action="@{/edit}" method="post">
+                        <input type="hidden" id="editId" name="id">
+                        <input type="hidden" id="editType" name="type">
+                        <div class="form-group">
+                            <label for="editTitle">Title</label>
+                            <input type="text" class="form-control" id="editTitle" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editDescription">Description</label>
+                            <textarea class="form-control" id="editDescription" name="description" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editGenre">Genre</label>
+                            <input type="text" class="form-control" id="editGenre" name="genre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editReleaseYear">Release Year</label>
+                            <input type="number" class="form-control" id="editReleaseYear" name="releaseYear" min="1800"
+                                max="2099" step="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editDirector">Director</label>
+                            <input type="text" class="form-control" id="editDirector" name="director" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Bootstrap core JavaScript
 ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="../static/js/bootstrap.bundle.min.js" th:href="@{/js/bootstrap.bundle.min.js}"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/edit.js"></script>
+	<script src="/js/search.js"></script>
 </body>
 
 </html>

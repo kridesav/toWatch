@@ -18,6 +18,14 @@ public class MediaItemProcessor implements ItemProcessor<Media, Media> {
                 media.setCast(truncatedCast);
             }
         }
+        if (media.getDirector() != null) {
+            String[] directors = media.getDirector().split(",");
+            if (directors.length > 2) {
+                // Join the first 2 cast members with a comma
+                String truncatedCast = String.join(",", Arrays.copyOf(directors, 2));
+                media.setDirector(truncatedCast);
+            }
+        }
         return media;
     }
 }

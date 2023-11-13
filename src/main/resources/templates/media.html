@@ -11,7 +11,7 @@
 <nav class="navbar sticky-top navbar-expand-lg bg-body-tertiary">
 	<div class="container-fluid">
 		<a class="navbar-brand" href="#">
-			<img src="images/toWatch.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+			<img src="/images/toWatch.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
 			toWatch</a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
 			aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,7 +23,7 @@
 					<div class="col-4">
 						<ul class="navbar-nav mb-2 mb-lg-0">
 							<li class="nav-item">
-								<a class="nav-link active" aria-current="page" href="/home">Home</a>
+								<a class="nav-link" aria-current="page" href="/home">Home</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="/movies">Movies</a>
@@ -58,35 +58,28 @@
 
 <body>
     <div class="container py-4">
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">About toWatch</h5>
-                        <p class="card-text">toWatch is a platform where you can find your favorite movies and TV shows, and keep track of what you want to watch.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="row">
             <div class="col-md-6 mb-4">
-                <h2>Most Favorited Movies</h2>
-                <ul th:each="movie : ${movies}">
-                    <h2><a class="white-link" th:href="@{'/media/movie/' + ${movie.id}}" th:text="${movie.title}"></a></h2>
-                </ul>
+                <h2 th:text="${media.title}"></h2>
+                <p><strong>Type:</strong> <span th:text="${media.type}"></span></p>
+                <p><strong>Description:</strong> <span th:text="${media.description}"></span></p>
+                <p><strong>Genre:</strong> <span th:text="${media.listedIn}"></span></p>
+                <p><strong>Release Year:</strong> <span th:text="${media.releaseYear}"></span></p>
             </div>
             <div class="col-md-6 mb-4">
-                <h2>Most Favorited TV Shows</h2>
-                <ul th:each="tvshow : ${tvshows}">
-                    <h2><a class="white-link" th:href="@{'/media/tvshow/' + ${tvshow.id}}" th:text="${tvshow.title}"></a></h2>
-                </ul>
+                <p><strong>Director:</strong> <span th:text="${media.director}"></span></p>
+                <p><strong>Cast:</strong> <span th:text="${media.cast}"></span></p>
+                <p><strong>Country:</strong> <span th:text="${media.country}"></span></p>
+                <p><strong>Date Added:</strong> <span th:text="${media.dateAdded}"></span></p>
+                <p><strong>Rating:</strong> <span th:text="${media.rating}"></span></p>
+                <p><strong>Duration:</strong> <span th:text="${media.duration}"></span></p>
             </div>
         </div>
     </div>
-	<!-- Bootstrap core JavaScript
+    <!-- Bootstrap core JavaScript
 ================================================== -->
-	<!-- Placed at the end of the document so the pages load faster -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
     <script src="/js/edit.js"></script>
 	<script src="/js/search.js"></script>

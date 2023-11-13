@@ -66,3 +66,46 @@ li {
     background-color: #e50914;
     color: #ffffff;
 }
+
+.white-link {
+    color: white;
+    text-decoration: none;
+}
+
+.black-link {
+    color: rgb(0, 0, 0);
+}
+
+.d-flex {
+    position: relative;
+}
+
+#suggestionList {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: white;
+    list-style-type: none;
+    padding: 0;
+    border: 1px solid #ccc;
+    display: none; /* Hide the list by default */
+}
+
+#suggestionList li {
+    padding: 10px;
+}
+
+#suggestionList li:hover {
+    background: #f0f0f0;
+}
+
+#suggestionList a {
+    text-decoration: none;
+    color: black;
+}
+
+#suggestionList li {
+    padding: 10px;
+    color: black; /* Add this line */
+}

@@ -1,8 +1,13 @@
 package hh.sof3.toWatch.controllers;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -61,7 +66,10 @@ public class MediaController {
 
     @RequestMapping(value = "/movies")
     public String MovieList(Model model, Principal principal) {
-        User user = uRepo.findByUsername(principal.getName());
+        User user = null;
+        if (principal != null) {
+            user = uRepo.findByUsername(principal.getName());
+        }
         model.addAttribute("user", user);
         model.addAttribute("movies", mRepo.findRandomMovies());
         return "movies";
@@ -69,7 +77,10 @@ public class MediaController {
 
     @RequestMapping(value = "/tvshows")
     public String TVShowList(Model model, Principal principal) {
-        User user = uRepo.findByUsername(principal.getName());
+        User user = null;
+        if (principal != null) {
+            user = uRepo.findByUsername(principal.getName());
+        }
         model.addAttribute("user", user);
         model.addAttribute("tvshows", tRepo.findRandomTvShows());
         return "tvshows";
@@ -124,43 +135,106 @@ public class MediaController {
     public String search(@RequestParam("q") String query, Model model, Principal principal) {
         List<Movie> movies = mRepo.findByTitleContainingIgnoreCase(query);
         List<TVShow> tvShows = tRepo.findByTitleContainingIgnoreCase(query);
-        User user = uRepo.findByUsername(principal.getName());
+        User user = null;
+        if (principal != null) {
+            user = uRepo.findByUsername(principal.getName());
+        }
         model.addAttribute("user", user);
         model.addAttribute("movies", movies);
         model.addAttribute("tvshows", tvShows);
         return "search";
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @RequestMapping(value = "/addMedia")
-    public String addMovie(Model model) {
-        model.addAttribute("media", new Media());
-        return "addMedia";
+    @GetMapping("/search/suggestions")
+    public ResponseEntity<List<Map<String, String>>> getSuggestions(@RequestParam String query) {
+        List<Movie> movies = mRepo.findByTitleContainingIgnoreCase(query).stream().limit(3)
+                .collect(Collectors.toList());
+        List<TVShow> tvShows = tRepo.findByTitleContainingIgnoreCase(query).stream().limit(3)
+                .collect(Collectors.toList());
+
+        List<Map<String, String>> suggestions = Stream.concat(movies.stream(), tvShows.stream())
+                .map(media -> {
+                    Map<String, String> suggestion = new HashMap<>();
+                    suggestion.put("id", media.getId().toString());
+                    suggestion.put("type", media instanceof Movie ? "movie" : "tvshow");
+                    suggestion.put("title", media.getTitle());
+                    return suggestion;
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(suggestions);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @RequestMapping(value = "/saveMovie", method = RequestMethod.POST)
-    public String save(Movie movie) {
-        mRepo.save(movie);
-        return "redirect:/home";
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/edit/{type}/{id}")
-    public String edit(@PathVariable String type, @PathVariable Long id, @ModelAttribute Media media, Model model, HttpServletRequest request) {
+    @GetMapping("/media/{type}/{id}")
+    public String getMedia(@PathVariable String type, @PathVariable Long id, Model model) {
         if (type.equals("movie")) {
-            Movie movie = mRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid movie Id:" + id));
-            movie.setTitle(media.getTitle());
-            movie.setDescription(media.getDescription());
+            Movie movie = mRepo.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid movie Id:" + id));
+            model.addAttribute("media", movie);
+        } else if (type.equals("tvshow")) {
+            TVShow tvShow = tRepo.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid TV show Id:" + id));
+            model.addAttribute("media", tvShow);
+        }
+        return "media";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @RequestMapping(value = "/addMedia", method = RequestMethod.POST)
+    public String save(@RequestParam Map<String, String> allParams) {
+        String type = allParams.get("type");
+        int releaseYear = Integer.parseInt(allParams.get("releaseDate"));
+        if (type.equals("movie")) {
+            Movie movie = new Movie();
+            movie.setTitle(allParams.get("title"));
+            movie.setType(type);
+            movie.setDescription(allParams.get("description"));
+            movie.setListedIn(allParams.get("genre"));
+            movie.setReleaseYear(releaseYear);
+            movie.setDirector(allParams.get("director"));
+            mRepo.save(movie);
+            return "redirect:/media/movie/" + movie.getId();
+        } else if (type.equals("tvshow")) {
+            TVShow tvShow = new TVShow();
+            tvShow.setTitle(allParams.get("title"));
+            tvShow.setType(type);
+            tvShow.setDescription(allParams.get("description"));
+            tvShow.setListedIn(allParams.get("genre"));
+            tvShow.setReleaseYear(releaseYear);
+            tvShow.setDirector(allParams.get("director"));
+            tRepo.save(tvShow);
+            return "redirect:/media/movie/" + tvShow.getId();
+        } else {
+            return "redirect:/home";
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
+    public String edit(@RequestParam Map<String, String> allParams) {
+        String type = allParams.get("type");
+        int id = Integer.parseInt(allParams.get("id"));
+        int releaseYear = Integer.parseInt(allParams.get("releaseYear"));
+        if (type.equals("Movie")) {
+            Movie movie = mRepo.findById((long) id)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid movie Id:" + id));
+            movie.setTitle(allParams.get("title"));
+            movie.setDescription(allParams.get("description"));
+            movie.setListedIn(allParams.get("genre"));
+            movie.setReleaseYear(releaseYear);
+            movie.setDirector(allParams.get("director"));
             mRepo.save(movie);
         } else if (type.equals("tvshow")) {
-            TVShow tvshow = tRepo.findById(id)
+            TVShow tvShow = tRepo.findById((long) id)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid TV show Id:" + id));
-            tvshow.setTitle(media.getTitle());
-            tvshow.setDescription(media.getDescription());
-            tRepo.save(tvshow);
+            tvShow.setTitle(allParams.get("title"));
+            tvShow.setDescription(allParams.get("description"));
+            tvShow.setListedIn(allParams.get("genre"));
+            tvShow.setReleaseYear(releaseYear);
+            tvShow.setDirector(allParams.get("director"));
+            tRepo.save(tvShow);
         }
-        return "redirect:" + request.getHeader("Referer");
+        return "redirect:/media/" + type + "/" + id;
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
