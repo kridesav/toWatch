@@ -22,10 +22,10 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
@@ -85,7 +85,7 @@
 			<artifactId>commons-csv</artifactId>
 			<version>1.8</version> <!-- Use the version that matches your project -->
 		</dependency>
- </dependencies>
+	</dependencies>
 
 	<build>
 		<plugins>
