@@ -19,7 +19,6 @@ public class User {
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
-    // Username with unique constraint
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
@@ -32,8 +31,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Favourite> favourites;
 
-    // Constructors, getters, and setters
-
     public User() {
     }
 
@@ -42,8 +39,6 @@ public class User {
         this.passwordHash = passwordHash;
         this.role = role;
     }
-
-    // Getters and setters for id, username, and passwordHash
 
     public Long getId() {
         return id;

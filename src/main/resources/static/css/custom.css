@@ -94,7 +94,7 @@ li {
     list-style-type: none;
     padding: 0;
     border: 1px solid #ccc;
-    display: none; /* Hide the list by default */
+    display: none;
 }
 
 #suggestionList li {
@@ -112,7 +112,7 @@ li {
 
 #suggestionList li {
     padding: 10px;
-    color: black; /* Add this line */
+    color: black;
 }
 
 .media-grid {
@@ -122,8 +122,8 @@ li {
 }
 
 .media-item {
-    flex: 1 0 19%; /* Adjust as needed */
-    margin: 0.5%; /* Adjust as needed */
+    flex: 1 0 19%;
+    margin: 0.5%;
     text-align: center;
 }
 

@@ -9,13 +9,11 @@ public class JobCompletionNotificationListener implements JobExecutionListener {
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
-        // This method is called before the job starts.
         System.out.println("Job is starting...");
     }
 
     @Override
     public void afterJob(JobExecution jobExecution) {
-        // This method is called after the job completes.
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
             System.out.println("Job completed successfully.");
         } else if (jobExecution.getStatus() == BatchStatus.FAILED) {

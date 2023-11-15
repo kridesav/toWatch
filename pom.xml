@@ -85,6 +85,21 @@
 			<artifactId>commons-csv</artifactId>
 			<version>1.8</version> <!-- Use the version that matches your project -->
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>6.1.5.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish</groupId>
+			<artifactId>jakarta.el</artifactId>
+			<version>3.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator-cdi</artifactId>
+			<version>6.1.5.Final</version>
+		</dependency>
 	</dependencies>
 
 	<build>

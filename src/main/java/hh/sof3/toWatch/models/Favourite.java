@@ -21,8 +21,6 @@ public class Favourite {
     @JoinColumn(name = "tvshow_id")
     private TVShow tvshow;
 
-    // Constructors, getters, and setters
-
     public Favourite() {
     }
 
@@ -35,8 +33,6 @@ public class Favourite {
         this.user = user;
         this.tvshow = tvshow;
     }
-
-    // Getters and setters for id, user, movie, and tvshow
 
     public Long getId() {
         return id;

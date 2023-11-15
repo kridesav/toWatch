@@ -1,5 +1,7 @@
 package hh.sof3.toWatch.models;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
 @MappedSuperclass
 public class Media {
@@ -13,7 +15,10 @@ public class Media {
     @Column(name = "show_type")
     private String type;
 
+    @NotBlank(message = "Title is mandatory")
     private String title;
+
+    @NotBlank(message = "Director is mandatory")
     private String director;
 
     @Column(name = "starring")
@@ -21,10 +26,17 @@ public class Media {
 
     private String country;
     private String dateAdded;
+
+    @Min(value = 1900, message = "Release year must be at least 1900")
     private int releaseYear;
+
     private String rating;
     private String duration;
+
+    @NotBlank(message = "Genre is mandatory")
     private String listedIn;
+
+    @NotBlank(message = "Description is mandatory")
     private String description;
 
     public Media(String showId, String type, String title, String director, String cast, String country,

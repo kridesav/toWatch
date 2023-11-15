@@ -39,8 +39,8 @@ public class BatchConfig {
     @Bean
     public FlatFileItemReader<Media> reader() {
         FlatFileItemReader<Media> reader = new FlatFileItemReader<>();
-        reader.setResource(new FileSystemResource(fileInput)); // Adjust the path to your CSV file
-        reader.setLinesToSkip(1); // Skip the header row
+        reader.setResource(new FileSystemResource(fileInput));
+        reader.setLinesToSkip(1);
 
         DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
         tokenizer.setNames("showId", "type", "title", "director", "cast", "country", "dateAdded", "releaseYear",
@@ -69,7 +69,7 @@ public class BatchConfig {
                 } else if ("TV Show".equals(media.getType())) {
                     return tvShowWriter(dataSource());
                 }
-                return null; // Handle other types or errors
+                return null;
             }
         };
     }

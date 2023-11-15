@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import hh.sof3.toWatch.models.User;
 import hh.sof3.toWatch.repositories.UserRepository;
@@ -32,13 +33,20 @@ public class ToWatchApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Insert user data into the database
-        User user1 = new User("user", "$2a$12$QkYGF6nkoi8D4UCiDKSPr.gr0Xw1h9boKeyky0goH3FXBecJS6TAq", "USER");
-        User user2 = new User("admin", "$2a$12$Rg9G9n6KevzjGCW0wiDANuh0hoXoHFuhXyguk/PC4fFDGjouMA.8.", "ADMIN");
-        userRepository.save(user1);
-        userRepository.save(user2);
+       String adminUsername = System.getenv("ADMIN_USERNAME");
+        String adminPassword = System.getenv("ADMIN_PASSWORD");
+        String adminRole = "ADMIN";
+        String hashedPassword = new BCryptPasswordEncoder().encode(adminPassword);
+        User adminUser = new User(adminUsername, hashedPassword, adminRole);
+        userRepository.save(adminUser);
 
-        // Run the Spring Batch job
+        String userUsername = System.getenv("USER_USERNAME");
+        String userPassword = System.getenv("USER_PASSWORD");
+        String userRole = "USER";
+        String hashedPassword2 = new BCryptPasswordEncoder().encode(userPassword);
+        User userUser = new User(userUsername, hashedPassword2, userRole);
+        userRepository.save(userUser);
+
         JobParameters params = new JobParametersBuilder()
                 .addString("JobID", String.valueOf(System.currentTimeMillis()))
                 .toJobParameters();
