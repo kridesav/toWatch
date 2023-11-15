@@ -85,7 +85,7 @@ searchInput.addEventListener('keydown', function (event) {
         var mediaId = img.id.replace(`${type}-poster-`, '');
         var mediaTitle = document.querySelector(`a[href="/media/${type}/` + mediaId + '"]').textContent;
         var formattedTitle = mediaTitle.replace(/ /g, '-');
-        fetch(`http://www.omdbapi.com/?apikey=f783f5dc&t=${formattedTitle}`)
+        fetch(`https://www.omdbapi.com/?apikey=f783f5dc&t=${formattedTitle}`)
             .then(response => response.json())
             .then(data => {
                 if (data.Poster) {
