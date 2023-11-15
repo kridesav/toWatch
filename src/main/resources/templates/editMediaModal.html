@@ -1,0 +1,43 @@
+ <!-- Edit Media Modal -->
+ 
+ <div class="modal fade" id="editMediaModal" tabindex="-1" role="dialog" aria-labelledby="editMediaModalLabel"
+ aria-hidden="true">
+ <div class="modal-dialog" role="document">
+     <div class="modal-content">
+         <div class="modal-header">
+             <h5 class="modal-title" id="editMediaModalLabel">Edit Media</h5>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                 <span aria-hidden="true">&times;</span>
+             </button>
+         </div>
+         <div class="modal-body">
+             <form id="editForm" th:action="@{/edit}" method="post">
+                 <input type="hidden" id="editId" name="id">
+                 <input type="hidden" id="editType" name="type">
+                 <div class="form-group">
+                     <label for="editTitle">Title</label>
+                     <input type="text" class="form-control" id="editTitle" name="title" required>
+                 </div>
+                 <div class="form-group">
+                     <label for="editDescription">Description</label>
+                     <textarea class="form-control" id="editDescription" name="description" required></textarea>
+                 </div>
+                 <div class="form-group">
+                     <label for="editGenre">Genre</label>
+                     <input type="text" class="form-control" id="editGenre" name="genre" required>
+                 </div>
+                 <div class="form-group">
+                     <label for="editReleaseYear">Release Year</label>
+                     <input type="number" class="form-control" id="editReleaseYear" name="releaseYear" min="1800"
+                         max="2099" step="1" required>
+                 </div>
+                 <div class="form-group">
+                     <label for="editDirector">Director</label>
+                     <input type="text" class="form-control" id="editDirector" name="director" required>
+                 </div>
+                 <button type="submit" class="btn btn-primary">Save changes</button>
+             </form>
+         </div>
+     </div>
+ </div>
+</div>

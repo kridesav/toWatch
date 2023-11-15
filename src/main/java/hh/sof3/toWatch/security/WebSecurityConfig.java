@@ -18,31 +18,38 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class WebSecurityConfig {
 
-    @Autowired
-    private UserDetailsServiceImpl userDetailServiceImpl;
+        @Autowired
+        private UserDetailsServiceImpl userDetailServiceImpl;
 
-    @Bean
-    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(antMatcher("/favourites")).hasAnyAuthority("USER", "ADMIN")
-                        .requestMatchers(antMatcher("/**")).permitAll()
-                        .requestMatchers(antMatcher("/images/**")).permitAll() // allow all users to access the images
-                        .requestMatchers(antMatcher("/css/**")).permitAll()
-                        .requestMatchers(antMatcher("/h2-console/**")).permitAll()
-                        .anyRequest().hasAnyAuthority("GUEST", "USER", "ADMIN"))
-                .formLogin(formlogin -> formlogin
-                        .defaultSuccessUrl("/home", true)
-                        .permitAll())
-                .logout(logout -> logout
-                        .permitAll())
-                .csrf(csrf -> csrf.disable())
-                .headers(headers -> headers.frameOptions().sameOrigin());
-        return http.build();
-    }
+        @Bean
+        public SecurityFilterChain configure(HttpSecurity http) throws Exception {
+                http
+                                .authorizeHttpRequests(authorize -> authorize
+                                                .requestMatchers(antMatcher("/favourites"))
+                                                .hasAnyAuthority("USER", "ADMIN")
+                                                .requestMatchers(antMatcher("/**")).permitAll()
+                                                .requestMatchers(antMatcher("/images/**")).permitAll() // allow all
+                                                                                                       // users to
+                                                                                                       // access the
+                                                                                                       // images
+                                                .requestMatchers(antMatcher("/css/**")).permitAll()
+                                                .requestMatchers(antMatcher("/h2-console/**")).permitAll()
+                                                .anyRequest().hasAnyAuthority("GUEST", "USER", "ADMIN"))
+                                .formLogin(formlogin -> formlogin
+                                                .defaultSuccessUrl("/home", true)
+                                                .permitAll())
+                                .logout(logout -> logout
+                                                .logoutSuccessUrl("/home")
+                                                .invalidateHttpSession(true)
+                                                .deleteCookies("JSESSIONID")
+                                                .permitAll())
+                                .csrf(csrf -> csrf.disable())
+                                .headers(headers -> headers.frameOptions().sameOrigin());
+                return http.build();
+        }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailServiceImpl).passwordEncoder(new BCryptPasswordEncoder());
-    }
+        @Autowired
+        public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+                auth.userDetailsService(userDetailServiceImpl).passwordEncoder(new BCryptPasswordEncoder());
+        }
 }

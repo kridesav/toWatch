@@ -1,0 +1,52 @@
+<!-- Add Media Modal -->
+
+<div class="modal fade" id="addMediaModal" tabindex="-1" role="dialog" aria-labelledby="addMediaModalLabel"
+aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="addMediaModalLabel">Add Media</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form th:action="@{/addMedia}" method="post">
+                <div class="form-group">
+                    <label for="type">Type</label>
+                    <select id="type" name="type" class="form-control" required>
+                        <option value="movie">Movie</option>
+                        <option value="tvshow">TV Show</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="Enter title"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" id="description" name="description"
+                        placeholder="Enter description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="genre">Genre</label>
+                    <input type="text" class="form-control" id="genre" name="genre" placeholder="Enter genre"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="releaseDate">Release Date</label>
+                    <input type="number" class="form-control" id="releaseDate" name="releaseDate"
+                        placeholder="Enter release year" required>
+                </div>
+                <div class="form-group">
+                    <label for="director">Director</label>
+                    <input type="text" class="form-control" id="director" name="director"
+                        placeholder="Enter director's name" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+</div>

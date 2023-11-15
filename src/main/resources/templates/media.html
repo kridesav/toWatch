@@ -31,7 +31,7 @@
 							<li class="nav-item">
 								<a class="nav-link" href="/tvshows">TV Shows</a>
 							</li>
-							<li class="nav-item">
+							<li sec:authorize="isAuthenticated()" class="nav-item">
 								<a class="nav-link" href="/favourites">Favorites</a>
 							</li>
 						</ul>
@@ -60,13 +60,20 @@
     <div class="container py-4">
         <div class="row">
             <div class="col-md-6 mb-4">
-                <h2 th:text="${media.title}"></h2>
-                <p><strong>Type:</strong> <span th:text="${media.type}"></span></p>
+				<div th:if="${media.type == 'Movie'}">
+					<h2><a class="red-link" th:href="@{'/media/movie/' + ${media.id}}" th:text="${media.title}"></a></h2>
+					<img class="movie-poster" th:id="'movie-poster-' + ${media.id}" />
+				</div>
+				<div th:if="${media.type == 'TV Show'}">
+					<h2><a class="red-link" th:href="@{'/media/tvshow/' + ${media.id}}" th:text="${media.title}"></a></h2>
+					<img class="tvshow-poster" th:id="'tvshow-poster-' + ${media.id}" />
+				</div>
+            </div>
+            <div class="col-md-6 mb-4">
+				<p><strong>Type:</strong> <span th:text="${media.type}"></span></p>
                 <p><strong>Description:</strong> <span th:text="${media.description}"></span></p>
                 <p><strong>Genre:</strong> <span th:text="${media.listedIn}"></span></p>
                 <p><strong>Release Year:</strong> <span th:text="${media.releaseYear}"></span></p>
-            </div>
-            <div class="col-md-6 mb-4">
                 <p><strong>Director:</strong> <span th:text="${media.director}"></span></p>
                 <p><strong>Cast:</strong> <span th:text="${media.cast}"></span></p>
                 <p><strong>Country:</strong> <span th:text="${media.country}"></span></p>

@@ -54,6 +54,7 @@ public class MediaController {
         return "login";
     }
 
+
     @GetMapping({ "/home", "/" })
     public String home(Model model) {
         Pageable topFive = PageRequest.of(0, 5);
@@ -187,7 +188,7 @@ public class MediaController {
         if (type.equals("movie")) {
             Movie movie = new Movie();
             movie.setTitle(allParams.get("title"));
-            movie.setType(type);
+            movie.setType("Movie");
             movie.setDescription(allParams.get("description"));
             movie.setListedIn(allParams.get("genre"));
             movie.setReleaseYear(releaseYear);
@@ -197,13 +198,13 @@ public class MediaController {
         } else if (type.equals("tvshow")) {
             TVShow tvShow = new TVShow();
             tvShow.setTitle(allParams.get("title"));
-            tvShow.setType(type);
+            tvShow.setType("TV Show");
             tvShow.setDescription(allParams.get("description"));
             tvShow.setListedIn(allParams.get("genre"));
             tvShow.setReleaseYear(releaseYear);
             tvShow.setDirector(allParams.get("director"));
             tRepo.save(tvShow);
-            return "redirect:/media/movie/" + tvShow.getId();
+            return "redirect:/media/tvshow/" + tvShow.getId();
         } else {
             return "redirect:/home";
         }
@@ -224,7 +225,8 @@ public class MediaController {
             movie.setReleaseYear(releaseYear);
             movie.setDirector(allParams.get("director"));
             mRepo.save(movie);
-        } else if (type.equals("tvshow")) {
+            return "redirect:/media/movie/" + movie.getId();
+        } else if (type.equals("TV Show")) {
             TVShow tvShow = tRepo.findById((long) id)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid TV show Id:" + id));
             tvShow.setTitle(allParams.get("title"));
@@ -233,8 +235,10 @@ public class MediaController {
             tvShow.setReleaseYear(releaseYear);
             tvShow.setDirector(allParams.get("director"));
             tRepo.save(tvShow);
+            return "redirect:/media/tvshow/" + tvShow.getId();
+        } else {
+            return "redirect:/home";
         }
-        return "redirect:/media/" + type + "/" + id;
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

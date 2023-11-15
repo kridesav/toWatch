@@ -72,6 +72,11 @@ li {
     text-decoration: none;
 }
 
+.red-link {
+    color: #e50914;
+    text-decoration: none;
+}
+
 .black-link {
     color: rgb(0, 0, 0);
 }
@@ -108,4 +113,36 @@ li {
 #suggestionList li {
     padding: 10px;
     color: black; /* Add this line */
+}
+
+.media-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.media-item {
+    flex: 1 0 19%; /* Adjust as needed */
+    margin: 0.5%; /* Adjust as needed */
+    text-align: center;
+}
+
+.movie-poster, .tvshow-poster {
+    width: 80%;
+    height: auto;
+    object-fit: cover;
+}
+
+.media-grid .movie-poster, .media-grid .tvshow-poster {
+    width: 100%;
+    height: 350px;
+}
+
+.movie-poster, .tvshow-poster {
+    width: 70%;
+    height: 70%;
+    object-fit: cover;
+}
+.navbar {
+    height: 70px;
 }

@@ -79,3 +79,18 @@ searchInput.addEventListener('keydown', function (event) {
         window.location = '/search?q=' + encodeURIComponent(searchInput.value);
     }
 });
+
+['movie', 'tvshow'].forEach(type => {
+    document.querySelectorAll(`.${type}-poster`).forEach(function(img) {
+        var mediaId = img.id.replace(`${type}-poster-`, '');
+        var mediaTitle = document.querySelector(`a[href="/media/${type}/` + mediaId + '"]').textContent;
+        var formattedTitle = mediaTitle.replace(/ /g, '-');
+        fetch(`http://www.omdbapi.com/?apikey=f783f5dc&t=${formattedTitle}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.Poster) {
+                    img.src = data.Poster;
+                }
+            });
+    });
+});

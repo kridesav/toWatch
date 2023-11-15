@@ -5,7 +5,8 @@
 	<title>toWatch</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
-	<link type="text/css" rel="stylesheet" th:href="@{/css/custom.css}" />
+	<link type="text/css" rel="stylesheet" href="/css/custom.css" th:href="@{/css/custom.css}" />
+	<link rel="stylesheet" type="text/css" href="/css/modal.css" th:href="@{/css/modal.css}">
 </head>
 
 <nav class="navbar sticky-top navbar-expand-lg bg-body-tertiary">
@@ -31,14 +32,15 @@
 							<li class="nav-item">
 								<a class="nav-link" href="/tvshows">TV Shows</a>
 							</li>
-							<li class="nav-item">
+							<li sec:authorize="isAuthenticated()" class="nav-item">
 								<a class="nav-link" href="/favourites">Favorites</a>
 							</li>
 						</ul>
 					</div>
 					<div class="col-4">
 						<form class="d-flex">
-							<input class="form-control me-2" id="searchInput" type="search" placeholder="Search..." aria-label="Search">
+							<input class="form-control me-2" id="searchInput" type="search" placeholder="Search..."
+								aria-label="Search">
 							<ul id="suggestionList"></ul>
 						</form>
 					</div>
@@ -46,8 +48,8 @@
 						<form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
 							<input type="submit" value="Sign Out" class="btn btn-danger" />
 						</form>
-						<form th:action="@{/login}" method="get" sec:authorize="isAnonymous()">
-							<input type="submit" value="Log In" class="btn btn-success" />
+						<form sec:authorize="isAnonymous()">
+							<input type="button" value="Log In" class="btn btn-success" data-toggle="modal" data-target="#login-modal"/>
 						</form>
 					</div>
 				</div>
@@ -55,40 +57,47 @@
 		</div>
 	</div>
 </nav>
-
 <body>
-    <div class="container py-4">
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">About toWatch</h5>
-                        <p class="card-text">toWatch is a platform where you can find your favorite movies and TV shows, and keep track of what you want to watch.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <h2>Most Favorited Movies</h2>
-                <ul th:each="movie : ${movies}">
-                    <h2><a class="white-link" th:href="@{'/media/movie/' + ${movie.id}}" th:text="${movie.title}"></a></h2>
-                </ul>
-            </div>
-            <div class="col-md-6 mb-4">
-                <h2>Most Favorited TV Shows</h2>
-                <ul th:each="tvshow : ${tvshows}">
-                    <h2><a class="white-link" th:href="@{'/media/tvshow/' + ${tvshow.id}}" th:text="${tvshow.title}"></a></h2>
-                </ul>
-            </div>
-        </div>
-    </div>
+	<div th:include="loginModal"></div>
+	<div class="container py-4">
+		<div class="row mb-4">
+			<div class="col-md-4">
+				<div class="card mb-4">
+					<div class="card-body">
+						<h5 class="card-title">About toWatch</h5>
+						<p class="card-text">toWatch is a platform where you can find your favorite movies and TV shows,
+							and keep track of what you want to watch.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12 mb-4">
+				<h2>Most Favorited Movies</h2>
+				<div class="media-grid">
+					<div th:each="movie : ${movies}" class="media-item">
+						<img class="movie-poster" th:id="'movie-poster-' + ${movie.id}" />
+						<h2><a class="white-link" th:href="@{'/media/movie/' + ${movie.id}}" th:text="${movie.title}"></a></h2>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12 mb-4">
+				<h2>Most Favorited TV Shows</h2>
+				<div class="media-grid">
+					<div th:each="tvshow : ${tvshows}" class="media-item">
+						<img class="tvshow-poster" th:id="'tvshow-poster-' + ${tvshow.id}" />
+						<h2><a class="white-link" th:href="@{'/media/tvshow/' + ${tvshow.id}}" th:text="${tvshow.title}"></a></h2>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 	<!-- Bootstrap core JavaScript
 ================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/edit.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+	<script src="/js/edit.js"></script>
 	<script src="/js/search.js"></script>
 </body>
 
