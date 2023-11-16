@@ -28,10 +28,7 @@ public class WebSecurityConfig {
                                                 .requestMatchers(antMatcher("/favourites"))
                                                 .hasAnyAuthority("USER", "ADMIN")
                                                 .requestMatchers(antMatcher("/**")).permitAll()
-                                                .requestMatchers(antMatcher("/images/**")).permitAll() // allow all
-                                                                                                       // users to
-                                                                                                       // access the
-                                                                                                       // images
+                                                .requestMatchers(antMatcher("/images/**")).permitAll()                     
                                                 .requestMatchers(antMatcher("/css/**")).permitAll()
                                                 .requestMatchers(antMatcher("/h2-console/**")).permitAll()
                                                 .anyRequest().hasAnyAuthority("GUEST", "USER", "ADMIN"))

@@ -24,7 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             
         User curruser = uRepo.findByUsername(username);
         if (curruser == null) {
-            // If the user is not found, create a guest user, couldnt get to work at moment
+            // If the user is not found, create a guest user
             curruser = new User();
             curruser.setUsername("guest");
             curruser.setRole("GUEST");
